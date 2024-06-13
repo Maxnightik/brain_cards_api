@@ -12,7 +12,7 @@
   "keywords": [
     "generate password"
   ],
-  "author": "Maksim Leskin <maksim.leskin@methed.ru>",
+  "author": "Maksim Leskin <maksim.leskin@methed>",
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   },
   "bugs": {
     "url": "https://github.com/maksim-leskin/brain_cards_api/issues",
-    "email": "maksim.leskin@methed.ru"
+    "email": "maksim.leskin@methed"
   },
   "devDependencies": {
     "eslint": "^8.36.0",
