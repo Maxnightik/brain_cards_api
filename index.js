@@ -41,19 +41,19 @@ const shuffle = array => {
 
 const createCategory = async (data, rewrite = false) => {
   if (!(typeof data.title === 'string')) {
-    throw new ApiError(400, { message: 'title обязательное свойство' });
+    throw new ApiError(400, { message: 'title обов'язкова властивість' });
   }
 
   if (!Array.isArray(data.pairs)) {
     throw new ApiError(400, {
-      message: 'pairs обязательно должен быть массив',
+      message: 'pairs обов'язково має бути масив',
     });
   }
 
   if (data.pairs?.length) {
     if (!Array.isArray(data.pairs[0])) {
       throw new ApiError(400, {
-        message: 'pairs может содержать только массив',
+        message: 'pairs може містити тільки масив',
       });
     }
   }
@@ -67,7 +67,7 @@ const createCategory = async (data, rewrite = false) => {
     )
   ) {
     throw new ApiError(400, {
-      message: 'pairs должен содержать массивы с двумя строками',
+      message: 'pairs повинен містити масиви з двома рядками',
     });
   }
   const categoryList = await readFile(DB_CARD_URL);
@@ -121,13 +121,13 @@ const getCategory = async itemId => {
 
 const initServer = () => {
   const server = createServer(async (req, res) => {
-    // req - объект с информацией о запросе,
-    // res - объект для управления отправляемым ответом
+    // req - об'єкт з інформацією про запит,
+    // res - об'єкт для управління відповіддю, що відправляється
 
-    // этот заголовок ответа указывает, что тело ответа будет в JSON формате
+    // цей заголовок відповіді вказує, що тіло відповіді буде в форматі JSON
     res.setHeader('Content-Type', 'application/json');
 
-    // CORS заголовки ответа для поддержки кросс-доменных запросов из браузера
+    // CORS заголовки відповіді для підтримки крос-доменних запитів із браузера
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
       'Access-Control-Allow-Methods',
@@ -135,34 +135,34 @@ const initServer = () => {
     );
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // запрос с методом OPTIONS может отправлять браузер автоматически
-    // для проверки CORS заголовков
-    // в этом случае достаточно ответить с пустым телом и этими заголовками
+   // запит із методом OPTIONS може надсилати браузер автоматично
+ // для перевірки CORS заголовків
+ // у цьому випадку достатньо відповісти з порожнім тілом та цими заголовками
     if (req.method === 'OPTIONS') {
-      // end = закончить формировать ответ и отправить его клиенту
+      // end = закінчити формувати відповідь та надіслати її клієнту
       res.end();
       return;
     }
 
-    // если URI не начинается с нужного префикса - можем сразу отдать 404
+    // якщо URI не починається з потрібного префікса – можемо відразу віддати 404
     if (!req.url || !req.url.startsWith(URI_PREFIX)) {
       res.statusCode = 404;
       res.end(JSON.stringify({ message: 'Not Found' }));
       return;
     }
 
-    // убираем из запроса префикс URI, разбиваем его на путь и параметры
+    // прибираємо із запиту префікс URI, розбиваємо його на шлях та параметри
     const [uri, query] = req.url.substring(URI_PREFIX.length).split('?');
     const queryParams = {};
-    // параметры могут отсутствовать вообще или иметь вид a=b&b=c
-    // во втором случае наполняем объект queryParams { a: 'b', b: 'c' }
+   // параметри можуть бути відсутніми взагалі або мати вигляд a=b&b=c
+ // у другому випадку наповнюємо об'єкт queryParams { a: 'b', b: 'c' }
     if (query) {
       for (const piece of query.split('&')) {
         const [key, value] = piece.split('=');
         queryParams[key] = value ? decodeURIComponent(value) : '';
       }
     }
-    // запрос на обработку POST запроса
+    // запит на обробку POST запиту
     try {
       if (
         req.method === 'POST' &&
@@ -205,19 +205,19 @@ const initServer = () => {
       }
     } catch (err) {
       console.log('err: ', err);
-      // обрабатываем сгенерированную нами же ошибку
+      // обробляємо згенеровану нами ж помилку
       if (err instanceof ApiError) {
         res.writeHead(err.statusCode);
         res.end(JSON.stringify(err.data));
       } else {
-        // если что-то пошло не так - пишем об этом в консоль
-        // и возвращаем 500 ошибку сервера
+        // якщо щось пішло не так - пишемо про це в консоль
+        // і повертаємо 500 помилку сервера
         res.statusCode = 500;
         res.end(JSON.stringify({ message: 'Server Error' }));
       }
     }
 
-    // запрос на обработку GET запроса
+    // запит на обробку GET запиту
     try {
       if (req.method === 'GET') {
         if (
@@ -239,34 +239,34 @@ const initServer = () => {
       }
     } catch (err) {
       console.log('err: ', err);
-      // обрабатываем сгенерированную нами же ошибку
+      // обробляємо згенеровану нами ж помилку
       if (err instanceof ApiError) {
         res.writeHead(err.statusCode);
         res.end(JSON.stringify(err.data));
       } else {
-        // если что-то пошло не так - пишем об этом в консоль
-        // и возвращаем 500 ошибку сервера
+        // якщо щось пішло не так - пишемо про це в консоль
+        // і повертаємо 500 помилку сервера
         res.statusCode = 500;
         res.end(JSON.stringify({ message: 'Server Error' }));
       }
     }
   });
 
-  // выводим инструкцию, как только сервер запустился...
+  // виводимо інструкцію, як тільки сервер запустився...
   server.on('listening', () => {
     if (process.env.NODE_ENV !== 'test') {
       console.log(
-        `Сервер Brain Cards запущен. Вы можете использовать его по адресу http://localhost:${PORT}`,
+        `Сервер Brain Cards запущений. Ви можете використовувати його за адресою http://localhost:${PORT}`,
       );
-      console.log('Нажмите CTRL+C, чтобы остановить сервер');
-      console.log('Доступные методы:');
-      console.log('GET  /api/category         - получить список категорий');
-      console.log(
-        'GET  /api/category/{id}    - получить список пар по категории',
-      );
-      console.log('DELETE  /api/category/{id} - удалить категорию');
-      console.log(
-        `POST /api/category         - добавить категорию
+      console.log('Натисніть CTRL+C, щоб зупинити сервер');
+     console.log('Доступні методи:');
+     console.log('GET /api/category - отримати список категорій');
+     console.log(
+     'GET /api/category/{id} - отримати список пар за категорією',
+     );
+     console.log('DELETE /api/category/{id} - видалити категорію');
+     console.log(
+        `POST /api/category         - додати категорію
         {
           title: {},
           pairs[]?:[[string, string]]
@@ -274,7 +274,7 @@ const initServer = () => {
       `,
       );
       console.log(
-        `PATCH /api/category/{id}   - обновить категорию
+        `PATCH /api/category/{id}   - оновити категорію
         {
           title: {},
           pairs[]?:[[string, string]]
@@ -283,7 +283,7 @@ const initServer = () => {
       );
     }
   });
-  // ...и вызываем запуск сервера на указанном порту
+  // ...і викликаємо запуск сервера на вказаному порту
 
   server.listen(PORT);
 };
