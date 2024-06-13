@@ -46,7 +46,7 @@ const createCategory = async (data, rewrite = false) => {
 
   if (!Array.isArray(data.pairs)) {
     throw new ApiError(400, {
-      message: 'pairs обов'язково має бути масив',
+      message: 'pairs обовязково має бути масив',
     });
   }
 
